@@ -20,13 +20,13 @@ cat << EOF > /etc/config.json
 {
   "inbounds":[
     {
-      "port": $PORT,
-      "protocol": "$PROTOCOL",
+      "port": 80,
+      "protocol": "vless",
       "settings": {
         "decryption": "none",
         "clients": [
           {
-            "id": "$UUID"
+            "id": "5d70c0ef-a9ff-41e9-b835-9b5b51b73dd1"
           }
         ]
       },
