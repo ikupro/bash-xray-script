@@ -60,7 +60,7 @@ cat << EOF > /etc/systemd/system/xray.service.d/10-donot_touch_single_conf.conf
 # Or all changes you made will be lost!  # Refer: https://www.freedesktop.org/software/systemd/man/systemd.unit.html
 [Service]
 ExecStart=
-ExecStart=/usr/local/bin/xray run -confdir /usr/local/etc/xray/
+ExecStart=/usr/bin/xray run -confdir /usr/etc/xray/
 EOF
 systemctl daemon-reload
 systemctl enable xray
