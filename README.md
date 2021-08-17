@@ -50,6 +50,8 @@ https://github.com/2dust/v2rayNG)
 
 * Xtls port = 443
 
+* Custom UUID = 5d70c0ef-a9ff-41e9-b835-9b5b51b73dd1
+
 ## :book: Unistallation (Remove xray-core and all modified config files from the server) *will not remove BBR
 
 1) sudo rm  -rf  ~/bash-xray-script
