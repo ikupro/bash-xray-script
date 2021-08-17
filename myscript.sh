@@ -1,5 +1,7 @@
 #!/bin/sh
 
+#input uuid & domain
+
 #configure timezone to sri lanka standards
 
 rm -rf /etc/localtime
@@ -16,7 +18,7 @@ bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release
 #adding new configuration files 
 
 rm -rf /usr/local/etc/xray/config.json
-cat << EOF > /etc/config.json
+cat << EOF > /usr/local/etc/xray/config.json
 {
   "inbounds":[
     {
@@ -40,7 +42,7 @@ cat << EOF > /etc/config.json
       "protocol": "freedom"
     }
   ]
-}	
+}
 EOF
 
 #accuring a ssl certificate (self-sigend openssl)
@@ -60,11 +62,19 @@ cat << EOF > /etc/systemd/system/xray.service.d/10-donot_touch_single_conf.conf
 # Or all changes you made will be lost!  # Refer: https://www.freedesktop.org/software/systemd/man/systemd.unit.html
 [Service]
 ExecStart=
-ExecStart=/usr/bin/xray run -confdir /usr/etc/xray/
+ExecStart=/usr/local/bin/xray run -confdir /usr/local/etc/xray/
 EOF
 systemctl daemon-reload
 systemctl enable xray
 systemctl restart xray
 
-#run xray
-/usr/bin/xray run -config /etc/config.json
+#install bbr
+
+mkdir ~/across
+git clone https://github.com/teddysun/across ~/across
+chmod 777 ~/across
+bash ~/across/bbr.sh
+
+# run xray
+/usr/local/bin/xray run -config /etc/config.json
+/usr/local/bin/xray run -confdir /usr/local/etc/xray/
