@@ -1,10 +1,5 @@
 #!/bin/sh
 
-#input uuid & domain
-
-echo Enter a valid gen4 UUID:
-read uuid
-
 #configure timezone to sri lanka standards
 
 rm -rf /etc/localtime
@@ -21,17 +16,17 @@ bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release
 #adding new configuration files 
 
 rm -rf /usr/local/etc/xray/config.json
-cat << EOF > /usr/local/etc/xray/config.json
+cat << EOF > /etc/config.json
 {
   "inbounds":[
     {
-      "port": 80,
-      "protocol": "vless",
+      "port": $PORT,
+      "protocol": "$PROTOCOL",
       "settings": {
         "decryption": "none",
         "clients": [
           {
-            "id": "5d70c0ef-a9ff-41e9-b835-9b5b51b73dd1"
+            "id": "$UUID"
           }
         ]
       },
@@ -45,58 +40,7 @@ cat << EOF > /usr/local/etc/xray/config.json
       "protocol": "freedom"
     }
   ]
-}
-EOF
-cat << EOF > /usr/local/etc/xray/config1.json
-{
-    "inbounds": [
-	{
-            "port": 443,
-            "protocol": "vless",
-			"tag":"XTLS",
-            "settings": {
-                "clients": [
-                    {
-                        "id": "$uuid",
-                        "flow": "xtls-rprx-direct",
-                        "level": 0
-                    }
-                ],
-                "decryption": "none",
-				"fallbacks": [
-                    {
-                        "dest": "www.baidu.com:80"
-                    }
-                ]
-            },
-            "streamSettings": {
-                "network": "tcp",
-                "security": "xtls",
-                "xtlsSettings": {
-                    "alpn": [
-                        "http/1.1"
-                    ],
-                    "certificates": [
-                        {
-                            "certificateFile": "/etc/xray/xray.crt",
-                            "keyFile": "/etc/xray/xray.key"
-                        }
-                    ]
-                }
-            }
-        }
-	]
-}
-EOF
-cat << EOF > /usr/local/etc/xray/config2.json
-{
-    "outbounds": [
-	{
-      "protocol": "freedom",
-      "settings": {}
-    }
-	]
-}
+}	
 EOF
 
 #accuring a ssl certificate (self-sigend openssl)
@@ -122,9 +66,5 @@ systemctl daemon-reload
 systemctl enable xray
 systemctl restart xray
 
-#install bbr
-
-mkdir ~/across
-git clone https://github.com/teddysun/across ~/across
-chmod 777 ~/across
-bash ~/across/bbr.sh
+#run xray
+/usr/bin/xray run -config /etc/config.json
